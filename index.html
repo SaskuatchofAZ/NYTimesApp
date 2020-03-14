@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <title>NYT Article Search</title>
 </head>
+
 <body>
     <div class="container">
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-              <h1 class="display-4" style="text-align: center">New York Times Article Search</h1>
+                <h1 class="display-4" style="text-align: center">New York Times Article Search</h1>
             </div>
         </div>
 
@@ -18,34 +21,70 @@
             <div class="card-body">
                 <form>
                     <div class="form-group">
-                      <label for="formGroupExampleInput">Example keyword</label>
-                      <input type="text" class="form-control" id="keyword" placeholder="Example input placeholder">
+                        <label for="formGroupExampleInput">Example keyword</label>
+                        <input type="text" class="form-control" id="keyword" placeholder="Example input placeholder">
                     </div>
                     <div class="form-group">
-                      <label for="formGroupExampleInput2">Amount of Articles</label>
-                      <input type="text" class="form-control" id="article-num" placeholder="Another input placeholder">
+                        <label for="formGroupExampleInput2">Amount of Articles</label>
+                        <input type="text" class="form-control" id="article-num"
+                            placeholder="Another input placeholder">
                     </div>
                     <div class="form-group">
                         <label for="formGroupExampleInput3">Start Year</label>
                         <input type="text" class="form-control" id="start-year" placeholder="Example input placeholder">
-                      </div>
-                      <div class="form-group">
+                    </div>
+                    <div class="form-group">
                         <label for="formGroupExampleInput4">End Year</label>
                         <input type="text" class="form-control" id="end-year" placeholder="Another input placeholder">
-                      </div>
+                    </div>
                 </form>
+                <button id="submit">Submit</button>
             </div>
         </div>
 
         <div class="card">
             <div class="card-body">
-              This is some text within a card body.
+                <h1>Results:</h1>
+                <div id="results"></div>
             </div>
         </div>
     </div>
-    
+
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+    $("#submit").on("click", function () {
+        var keyword = $("#keyword").val()
+        var articleNum = parseInt($("#article-num").val())
+        var startDate = $("#start-year").val() + "0101"
+        var endDate = $("#end-year").val() + "1231"
+        console.log(articleNum)
+        var apiKey = "aDMF2xAcNpJs6LUFvZptGuVqTJx0FlYc"
+        $.ajax({
+            url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?query=" + keyword + "&begin_date=" + startDate + "&end_date=" + endDate + "&api-key=" + apiKey,
+            method: "GET"
+        }).then(function (response) {
+            console.log(response);
+            var articles = response.response.docs
+
+            for (var i = 0; i < articleNum; i++) {
+
+                var articleDiv = $("<div>");
+                var headline = $("<h3>");
+                var textBody = $("<p>");
+                var pubDate = $("<h4>");
+                $(pubDate).text(articles[i].pub_date.slice(0, 7));
+                $(textBody).text(articles[i].lead_paragraph);
+                $(headline).text(articles[i].headline.main);
+                $(articleDiv).append(headline, pubDate, textBody);
+                $("#results").append(articleDiv);
+
+            }
+        })
+
+    })
+
 
 </script>
+
 </html>
