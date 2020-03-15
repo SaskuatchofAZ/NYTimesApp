@@ -53,6 +53,7 @@
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+    
     $("#submit").on("click", function () {
         var keyword = $("#keyword").val()
         var articleNum = parseInt($("#article-num").val())
@@ -60,6 +61,9 @@
         var endDate = $("#end-year").val() + "1231"
         console.log(articleNum)
         var apiKey = "aDMF2xAcNpJs6LUFvZptGuVqTJx0FlYc"
+
+        $("#results").empty();
+        
         $.ajax({
             url: "http://api.nytimes.com/svc/search/v2/articlesearch.json?query=" + keyword + "&begin_date=" + startDate + "&end_date=" + endDate + "&api-key=" + apiKey,
             method: "GET"
@@ -68,11 +72,12 @@
             var articles = response.response.docs
 
             for (var i = 0; i < articleNum; i++) {
-
+                
                 var articleDiv = $("<div>");
                 var headline = $("<h3>");
                 var textBody = $("<p>");
                 var pubDate = $("<h4>");
+
                 $(pubDate).text(articles[i].pub_date.slice(0, 7));
                 $(textBody).text(articles[i].lead_paragraph);
                 $(headline).text(articles[i].headline.main);
